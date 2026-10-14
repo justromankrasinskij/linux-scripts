@@ -10,7 +10,7 @@ FONTS_LOCATION="/usr/local/share/fonts/"
 APT_MIRROR="debian.koyanet.lv"
 
 chex() {
-    . ./check-execution.sh
+    . ../shared/check-execution.sh
 }
 
 if [ $USER = root ]; then
@@ -19,7 +19,7 @@ if [ $USER = root ]; then
 fi
 
 #===============================BEGIN===============================#
-echo -e '\nWorking with GRUB...' && sleep 2
+echo -e '\nWorking with GRUB...' && sleep 1
 
 sudo cp $GRUB_FILE $GRUB_FILE.bak && \
 sudo sed -i -e 's/^GRUB_TIMEOUT=[0-9]*/GRUB_TIMEOUT=0/' \
@@ -30,7 +30,7 @@ chex
 #================================END================================#
 
 #===============================BEGIN===============================#
-echo -e '\nWorking with locales (Step 1)...' && sleep 2
+echo -e '\nWorking with locales (Step 1)...' && sleep 1
 
 sudo cp $LOCALE_GEN_FILE $LOCALE_GEN_FILE.bak
 
@@ -48,7 +48,7 @@ chex
 #================================END================================#
 
 #===============================BEGIN===============================#
-echo -e '\nWorking with locales (Step 2)...' && sleep 2
+echo -e '\nWorking with locales (Step 2)...' && sleep 1
 
 sudo cp $LOCALE_FILE $LOCALE_FILE.bak && \
 (
@@ -63,7 +63,7 @@ chex
 #================================END================================#
 
 #===============================BEGIN===============================#
-echo -e '\nWorking with APT mirrors...' && sleep 2
+echo -e '\nWorking with APT mirrors...' && sleep 1
 
 sudo cp $APT_SOURCES_LIST $APT_SOURCES_LIST.bak && \
 (
@@ -78,16 +78,16 @@ chex
 #================================END================================#
 
 #===============================BEGIN===============================#
-echo -e '\nWorking with fonts...' && sleep 2
+echo -e '\nWorking with fonts...' && sleep 1
 
-sudo cp -r fira-mono $FONTS_LOCATION && \
-sudo cp local.conf /etc/fonts/
+sudo cp -r ../shared/fira-mono $FONTS_LOCATION && \
+sudo cp ../shared/local.conf /etc/fonts/
 
 chex
 #================================END================================#
 
 #===============================BEGIN===============================#
-echo -e '\nWorking with specific desktop environment settings...' && sleep 2
+echo -e '\nWorking with specific desktop environment settings...' && sleep 1
 
 read -p "Enter your desktop environment (kde): " env
 
@@ -96,7 +96,7 @@ case "$env" in
         . ./kde.sh
         ;;
     *)
-        echo "Enter 'kde' or 'gnome'."
+        echo "Enter 'kde'."
         exit 1
         ;;
 esac
@@ -105,7 +105,7 @@ chex
 #================================END================================#
 
 #===============================BEGIN===============================#
-echo -e '\nWorking with home directory...' && sleep 2
+echo -e '\nWorking with home directory...' && sleep 1
 
 EXCEPTIONS=(
     ".profile"
@@ -135,6 +135,6 @@ chex
 
 echo -e '\nReboot...'
 
-sleep 2
+sleep 1
 
 sudo reboot
