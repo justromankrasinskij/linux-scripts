@@ -1,22 +1,22 @@
 #!/bin/bash
 
-IP="$1"
-
-if [ -z "$IP" ] && [ -z "$RUNNING_ON_REMOTE" ]; then
-    echo "Server IP is required. Example: $0 1.2.3.4"
-    exit 1
-fi
-
 if [ -z "$RUNNING_ON_REMOTE" ]; then
+    read -r -p "Enter server IP: " IP
+
+    if [ -z "$IP" ]; then
+        echo "Server IP is required."
+        exit 1
+    fi
+
     echo "[Local] Copying SSH key to $IP..."
-    ssh-copy-id root@$IP
+    ssh-copy-id -i ~/.ssh/vps.pub "root@$IP" || exit 1
 
     echo "[Local] Sending script to remote server $IP..."
-    cat "$0" | ssh -t root@$IP "RUNNING_ON_REMOTE=true bash -s -- $IP"
+    cat "$0" | ssh "root@$IP" "RUNNING_ON_REMOTE=true IP='$IP' bash -s"
     exit $?
 fi
 
-echo "[Remote] Configuring VPS with IP: $1"
+echo "[Remote] Configuring VPS with IP: ${IP:-<not set>}"
 
 cp /etc/ssh/sshd_config /etc/ssh/sshd_config.bak
 
